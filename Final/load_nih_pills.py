@@ -41,6 +41,19 @@ def load_pill_data(csv_path="nlm_images_verified.csv", image_dir=None):
     df_nlm = df_nlm.rename(columns={'name': 'label'})
     df_nlm['label_id'] = le.fit_transform(df_nlm['label'])
     num_classes = len(le.classes_)
+    
+    # The numbers in .Normalize() are the standard to use for ImageNet since we are feeding them
+    # to ResNet
+
+    # We are transforming the data to make it standard
+    # and then packing the images into a tensor so that the network
+    # processes them without an issue
+
+
+    # train_tfms is to transform the data and helps the model with generalization
+
+    # We rotated, flipped, and jittered as forms of data augmentation
+
 
     train_tfms = transforms.Compose([
         transforms.Resize((300, 300)),
@@ -65,6 +78,9 @@ def load_pill_data(csv_path="nlm_images_verified.csv", image_dir=None):
         transforms.Normalize(mean=[0.485, 0.456, 0.406],
                              std=[0.229, 0.224, 0.225]),
     ])
+    # This is us creating the full, transformed dataset read for us to split into test/train
+    # and perform training
+
 
     # Get unique pill IDs
     pill_ids = df_nlm["pill_id"].unique()
@@ -95,12 +111,18 @@ def load_pill_data(csv_path="nlm_images_verified.csv", image_dir=None):
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     val_loader   = DataLoader(val_dataset, batch_size=32, shuffle=False)
     test_loader  = DataLoader(test_dataset, batch_size=32, shuffle=False)
-
+    
+    # Here are the number of unique pills in each train/test/val
+    
+    
     print("Number of unique pills:")
     print("Train:", train_df["pill_id"].nunique())
     print("Val  :", val_df["pill_id"].nunique())
     print("Test :", test_df["pill_id"].nunique())
-
+    
+    # Number of images in each train/test/val
+    
+    
     print("\nNumber of images:")
     print("Train:", len(train_df))
     print("Val  :", len(val_df))
