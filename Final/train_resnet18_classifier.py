@@ -9,10 +9,11 @@ from load_nih_pills import load_pill_data
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
-# evaluate() and train_one_epoch() from your notebook
 criterion = nn.CrossEntropyLoss()
 
+# Now we get to train the model!
+# Again, most of this code comes from class and homework assignments
+# When training we make sure to collect metrics on loss so that we are able to do error analysis and make training curves
 
 def train_one_epoch(model, loader, optimizer):
     model.train()
@@ -36,6 +37,8 @@ def train_one_epoch(model, loader, optimizer):
 
     return total_loss / total, correct / total
 
+# Setting up so we can evaluate the model with the data we set aside
+
 
 def evaluate(model, loader):
     model.eval()
@@ -58,7 +61,7 @@ def evaluate(model, loader):
     return total_loss / total, correct / total
 
 
-# === FEATURE EXTRACTION ===
+# here we perform feature extraction :
 preprocess = transforms.Compose([
     transforms.Resize((300,300)),
     transforms.ToTensor(),
@@ -83,10 +86,18 @@ def train_pretrained_resnet(epochs=10):
     ) = load_pill_data()
 
     # Pretrained ResNet18
+    # Since we are doing feature extraction, we do not use the ResNet18 that we built from scratch,
+    # we just use the .resnet18 function. We set the weights as "IMAGENET1K_V1" so
+    # it would be pretrained on ImageNet
+    
     model = models.resnet18(weights="IMAGENET1K_V1")
+    
+    # We replaced the last layer with our own number of classes then saved the model
     model.fc = nn.Linear(512, num_classes)
     model = model.to(device)
-
+    
+    # Finally, we optimized the parameters within the model
+    
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
 
     # Train loop
@@ -114,11 +125,10 @@ def train_pretrained_resnet(epochs=10):
         print("Extracting:", label)
         features_dict[label] = extract_features(img_path, feature_model)
 
-    # Return everything
     return (
-        model,          # trained classifier
-        feature_model,  # embedding model (fc removed)
-        features_dict,  # dict[label] = embedding tensor
+        model,         
+        feature_model, 
+        features_dict,  
         df_nlm,
         le,
         num_classes,
