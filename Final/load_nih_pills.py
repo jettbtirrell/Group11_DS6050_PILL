@@ -10,8 +10,6 @@ import torchvision.transforms as transforms
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-
-# This is the dataset class exactly as in the notebook
 class PillDataset(Dataset):
 
     def __init__(self, df, transform):
@@ -37,7 +35,6 @@ def load_pill_data(csv_path="nlm_images_verified.csv", image_dir=None):
     Returns the train/val/test loaders + dataframes + LabelEncoder + class count.
     """
 
-    # We copy the notebook section exactly
     df_nlm = pd.read_csv(csv_path)
     df_nlm["pill_id"] = df_nlm["nlmImageFileName"].str.split("_").str[0]
     le = LabelEncoder()
@@ -45,7 +42,6 @@ def load_pill_data(csv_path="nlm_images_verified.csv", image_dir=None):
     df_nlm['label_id'] = le.fit_transform(df_nlm['label'])
     num_classes = len(le.classes_)
 
-    # The transforms copied exactly from the notebook
     train_tfms = transforms.Compose([
         transforms.Resize((300, 300)),
         transforms.RandomHorizontalFlip(),
@@ -100,7 +96,6 @@ def load_pill_data(csv_path="nlm_images_verified.csv", image_dir=None):
     val_loader   = DataLoader(val_dataset, batch_size=32, shuffle=False)
     test_loader  = DataLoader(test_dataset, batch_size=32, shuffle=False)
 
-    # Printing to match notebook output
     print("Number of unique pills:")
     print("Train:", train_df["pill_id"].nunique())
     print("Val  :", val_df["pill_id"].nunique())
