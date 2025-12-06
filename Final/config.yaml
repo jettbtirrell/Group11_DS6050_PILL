@@ -1,31 +1,15 @@
-data:
-  dataset_csv: "data/nlm_images_verified.csv"
-  image_dir: "data/images"
-  split_seed: 42
-  train_val_test_split: [0.70, 0.15, 0.15]
-  split_by_pill: true
+dataset:
+  csv_path: "nlm_images_verified.csv"
 
 training:
   batch_size: 32
-  num_epochs: 10
-  learning_rate: 0.0001
-  num_workers: 2
-  augmentations:
-    horizontal_flip: true
-    vertical_flip: true
-    rotation: 20
-    color_jitter: true
+  epochs: 10
+  learning_rate: 1e-4
 
-model:
-  architecture: "resnet18"
-  pretrained: true
-  embedding_dim: 512
-
-retrieval:
-  k_neighbors: 5
+knn:
+  k: 5
   metric: "cosine"
 
-evaluation:
-  recall_k: [1, 5, 10]
-  compute_mrr: true
-  compute_inference_time: true
+transforms:
+  image_size: 300
+

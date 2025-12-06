@@ -12,3 +12,39 @@ Data Folder: A folder containing another folder titled '300'. This includes all 
 Milestone 1 Folder: A folder containing the milestone 1 proposal.
 
 Milestone 2 folder: A folder containing a 'Results' folder (with our training curve graphs and metrics table), the jupyter notebook 'Group11_Milestone2_Code.ipynb' (the code for our baseline model and graphs), and Group11_checkpoint.pdf (our write up for milestone 2).
+
+Final folder: A folder containing our final config.yaml, eval_retrieval.py, load_nih_pills.py, train_knn_retrieval.py, and train_resnet18_classifier.py files.
+
+### Instructions for reproducibility:
+
+To run our baseline classifier, create a python file or notebook in the Final folder and run the following code:
+
+```python
+
+from train_pretrained_resnet import train_pretrained_resnet
+
+(
+    classifier_model,
+    feature_model,
+    features_dict,
+    df_nlm,
+    label_encoder,
+    num_classes,
+    test_loader
+) = train_pretrained_resnet()
+
+```
+
+In order to run the retrieval evaluation, run the following code:
+
+```python
+
+from eval_retrieval import run_full_retrieval_evaluation
+
+results = run_full_retrieval_evaluation()
+
+print("Recall:", results["recall"])
+print("MRR:", results["mrr"])
+print("Average inference time:", results["avg_time"])
+
+```
