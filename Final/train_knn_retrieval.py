@@ -7,8 +7,10 @@ from sklearn.neighbors import KNeighborsClassifier
 
 from train_resnet18_classifier import train_pretrained_resnet
 
+# Here we are adding K-NN to the Pretrained model
 
 def train_knn_retrieval():
+    #Here is where we train KNN on the embedding space from resnet18
     (
         model,
         feature_model,
@@ -42,6 +44,7 @@ def train_knn_retrieval():
 
 
 def evaluate_knn(knn, feature_model, test_loader, label_encoder):
+    #we evaluate the performance of knn, the amount correct out of the total images in the val set
     correct = 0
     total = 0
 
@@ -58,6 +61,7 @@ def evaluate_knn(knn, feature_model, test_loader, label_encoder):
 
 
 def evaluate_knn_metrics(knn, feature_model, test_loader, label_encoder, pill_names, topk_list=[1,5,10]):
+    #We use this function to generate metrics like top k recall, MRR, and even time taken for knn
     y = np.array(pill_names)
 
     recall_totals = {k: 0 for k in topk_list}
