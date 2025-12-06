@@ -12,6 +12,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def evaluate_knn(knn, feature_model, test_loader, label_encoder):
     # We wanted to look at the accuracy metric as a way to initially identify
     # how well this model performed.
+    
+    # Essentially we just went throgh and predicted each with knn
+    # Got the true names and evaluated accuracy
     correct = 0
     total = 0
 
@@ -28,7 +31,6 @@ def evaluate_knn(knn, feature_model, test_loader, label_encoder):
 
 
 def evaluate_knn_metrics(knn, feature_model, test_loader, label_encoder, pill_names, topk_list=[1, 5, 10]):
-    # Very similar to the notebook code — calculating recall@k, MRR@k, and time
     y = np.array(pill_names)
 
     recall_totals = {k: 0 for k in topk_list}
@@ -71,8 +73,6 @@ def evaluate_knn_metrics(knn, feature_model, test_loader, label_encoder, pill_na
 
 
 def get_knn_predictions(knn, feature_model, test_loader, label_encoder, pill_names, k=5):
-    # Part of the project was to perform an error analysis
-    # Similar to notebook: show true label, predicted, top-5 for wrong examples
     y = np.array(pill_names)
     results = []
 
@@ -97,29 +97,26 @@ def get_knn_predictions(knn, feature_model, test_loader, label_encoder, pill_nam
 
 
 def run_full_retrieval_evaluation():
-    """
-    Runs:
-      1. KNN training (imported)
-      2. Recall@k, MRR@k, inference speed
-      3. Error analysis with top-5 neighbors
-
-    Returns all objects so the notebook or scripts can print tables / plots.
-    """
 
     # Load trained KNN + feature extractor + label encoder
     knn, feature_model, le, pill_names, test_loader = train_knn_retrieval()
 
-    # 1. Test accuracy
+    # We ran this on our test accuracy since we did training accuracy above
     accuracy = evaluate_knn(knn, feature_model, test_loader, le)
 
-    # 2. Recall@k, MRR@k, timing
+    # After seeing accuracy, we wanted to evaluate recall@1, recall@5, recall@10, as
+    # well as MRR at 1, 5, and 10 and the time the model took to run
+    # (These metrics were suggested by Professor Shakeri)
+
+    # Very similar to what we did above, we basically just created a function
+    # to loop through and calculate the important metrics
     recalls, mrrs, avg_time = evaluate_knn_metrics(
         knn, feature_model, test_loader, le,
         pill_names,
         topk_list=[1, 5, 10]
     )
 
-    # 3. Error analysis
+    # Here we do Error analysis
     results = get_knn_predictions(knn, feature_model, test_loader, le, pill_names, k=5)
     errors = [r for r in results if r["true"] != r["top1"]]
 
