@@ -29,7 +29,7 @@ class PillDataset(Dataset):
         return img, label
 
 
-def load_pill_data(csv_path="nlm_images_verified.csv", image_dir=None):
+def load_pill_data(csv_path="Final\\nlm_images_verified.csv", image_dir=None):
     """
     Loads the NLM pill image dataset exactly like the notebook code.
     Returns the train/val/test loaders + dataframes + LabelEncoder + class count.
